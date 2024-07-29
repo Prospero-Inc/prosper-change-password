@@ -76,8 +76,9 @@ export const ResetPassword = ({ token }: ResetPasswordProps) => {
           description: language.toast.success.description,
           status: 'success',
           isClosable: true,
+          duration: 9000,
         });
-        return setLocation('/reset-password-successfully', {
+        return setLocation('/auth/reset-password-successfully', {
           replace: true,
         });
       }
