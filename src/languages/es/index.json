@@ -1,0 +1,29 @@
+{
+  "heading": "Establecer una nueva contraseña",
+  "text": "Crea una nueva contraseña. Asegúrate de que sea diferente de las anteriores por seguridad",
+  "errors": {
+    "password": {
+      "required": "Se requiere una contraseña",
+      "min": "La contraseña debe tener al menos 8 caracteres",
+      "max": "La contraseña debe tener como máximo 20 caracteres",
+      "pattern": "La contraseña debe contener al menos una letra y un número"
+    },
+    "confirmPassword": {
+      "required": "Se requiere confirmar la contraseña",
+      "match": "Las contraseñas no coinciden"
+    }
+  },
+  "toast": {
+    "error": {
+      "title": "Ocurrió un error",
+      "description": "No se pudo establecer la nueva contraseña. Por favor, inténtalo de nuevo"
+    },
+    "success": {
+      "title": "Contraseña establecida con éxito",
+      "description": "Ahora puedes iniciar sesión con tu nueva contraseña"
+    }
+  },
+  "submit": "Cambiar contraseña",
+  "labelPassword": "Contraseña",
+  "labelConfirmPassword": "Confirmar contraseña"
+}

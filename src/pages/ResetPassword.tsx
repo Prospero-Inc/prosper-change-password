@@ -17,6 +17,8 @@ import { Controller, useForm } from 'react-hook-form';
 import { useToast } from '@chakra-ui/react';
 import { useState } from 'react';
 import { useLocation } from 'wouter';
+
+import language from '../languages/en/index.json';
 interface FormState {
   password: string;
   confirmPassword: string;
@@ -24,16 +26,16 @@ interface FormState {
 const validationSchema = yup.object().shape({
   password: yup
     .string()
-    .required('Password is required')
-    .min(8, 'Password must be at least 8 characters long')
+    .required(language.errors.password.required)
+    .min(8, language.errors.password.min)
     .matches(
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*[\d])(?=.*[@$!%*?&.])[A-Za-z\d@$!%*?&.]{8,}$/,
-      'Password must contain at least one lowercase letter, one uppercase letter, one digit, one special character, and one dot'
+      language.errors.password.pattern
     ),
   confirmPassword: yup
     .string()
-    .required('This field is required')
-    .oneOf([yup.ref('password')], 'Passwords must match'),
+    .required(language.errors.confirmPassword.required)
+    .oneOf([yup.ref('password')], language.errors.confirmPassword.match),
 });
 
 type ResetPasswordProps = {
@@ -59,7 +61,7 @@ export const ResetPassword = ({ token }: ResetPasswordProps) => {
     setIsLoading(true);
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/reset-password/${token}`,
+        `${import.meta.env.VITE_API_URL}/auth/reset-password/${token}`,
         {
           method: 'POST',
           headers: {
@@ -71,8 +73,8 @@ export const ResetPassword = ({ token }: ResetPasswordProps) => {
 
       if (!response.ok) {
         return toast({
-          title: 'An error occurred.',
-          description: 'Unable to reset password',
+          title: language.toast.error.title,
+          description: language.toast.error.description,
           status: 'error',
           isClosable: true,
         });
@@ -81,8 +83,8 @@ export const ResetPassword = ({ token }: ResetPasswordProps) => {
       await response.json();
 
       toast({
-        title: 'Password reset successfully',
-        description: 'You can now login with your new password',
+        title: language.toast.success.title,
+        description: language.toast.success.description,
         status: 'success',
         isClosable: true,
       });
@@ -106,22 +108,17 @@ export const ResetPassword = ({ token }: ResetPasswordProps) => {
         <Stack mb={'2.375rem'}>
           <Image src='/brand.svg' mb={'3.875rem'} />
           <Heading as={'h4'} mb={'1.125rem'}>
-            Set a new Password
+            {language.heading}
           </Heading>
-          <Text color={'gray.500'}>
-            Create a new password. Ensure it differs from previous ones for security
-          </Text>
+          <Text color={'gray.500'}>{language.text}</Text>
         </Stack>
 
         <form onSubmit={handleSubmit(onsubmit)}>
           <FormControl mb='1rem'>
-            <FormLabel fontWeight={600}>Password</FormLabel>
+            <FormLabel fontWeight={600}>{language.labelPassword}</FormLabel>
             <Controller
               name='password'
               control={control}
-              rules={{
-                required: 'This field is required',
-              }}
               render={({ field }) => (
                 <Input {...field} type='password' name='password' size={'lg'} />
               )}
@@ -131,7 +128,7 @@ export const ResetPassword = ({ token }: ResetPasswordProps) => {
             )}
           </FormControl>
           <FormControl mb='1.625rem'>
-            <FormLabel fontWeight={600}>Confirm Password</FormLabel>
+            <FormLabel fontWeight={600}>{language.labelConfirmPassword}</FormLabel>
             <Controller
               name='confirmPassword'
               control={control}
@@ -155,7 +152,7 @@ export const ResetPassword = ({ token }: ResetPasswordProps) => {
             size={'lg'}
             isLoading={isLoading}
           >
-            Change Password
+            {language.submit}
           </Button>
         </form>
       </Box>

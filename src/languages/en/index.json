@@ -1,0 +1,29 @@
+{
+  "heading": "Set a new Password",
+  "text": "Create a new password. Ensure it differs from previous ones for security",
+  "errors": {
+    "password": {
+      "required": "Password is required",
+      "min": "Password must be at least 8 characters long",
+      "max": "Password must be at most 20 characters long",
+      "pattern": "Password must contain at least one letter and one number"
+    },
+    "confirmPassword": {
+      "required": "Confirm Password is required",
+      "match": "Passwords do not match"
+    }
+  },
+  "toast":{
+    "error":{
+      "title":"An error occurred",
+      "description":"Unable to set new password. Please try again"
+    },
+    "success":{
+      "title":"Password set successfully",
+      "description":"You can now login with your new password"
+    }
+  },
+  "submit":"Change Password",
+  "labelPassword":"Password",
+  "labelConfirmPassword":"Confirm Password"
+}
