@@ -70,8 +70,18 @@ export const ResetPassword = ({ token }: ResetPasswordProps) => {
           body: JSON.stringify(data),
         }
       );
-
-      if (!response.ok) {
+      if (response.ok) {
+        toast({
+          title: language.toast.success.title,
+          description: language.toast.success.description,
+          status: 'success',
+          isClosable: true,
+        });
+        return setLocation('/reset-password-successfully', {
+          replace: true,
+        });
+      }
+      if (!response?.ok) {
         return toast({
           title: language.toast.error.title,
           description: language.toast.error.description,
@@ -79,18 +89,6 @@ export const ResetPassword = ({ token }: ResetPasswordProps) => {
           isClosable: true,
         });
       }
-
-      await response.json();
-
-      toast({
-        title: language.toast.success.title,
-        description: language.toast.success.description,
-        status: 'success',
-        isClosable: true,
-      });
-      setLocation('/reset-password-successfully', {
-        replace: true,
-      });
     } finally {
       setIsLoading(false);
     }
