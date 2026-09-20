@@ -1,0 +1,36 @@
+name: Deploy Prospero Change Password
+
+on:
+  push:
+    branches: ['main']
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+
+    env:
+      VITE_API_URL: ${{ secrets.VITE_API_URL }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        run: |
+          npm install -g pnpm
+          pnpm install
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Stop existing container
+        run: |
+          docker compose down
+          docker image prune -f
+
+      - name: Deploy Docker container
+        run: |
+          docker compose up --build -d
