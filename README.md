@@ -1,30 +1,48 @@
-# React + TypeScript + Vite
+# Prospero — Reset Password
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Mini-app standalone (Vite + React) que solo renderiza el flujo de "olvidé mi contraseña" al que
+llega el usuario desde el link del correo que manda `prospero-backend`. No es parte de
+`prospero-front` y se despliega por separado.
 
-Currently, two official plugins are available:
+## Requisitos
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- Node.js 18+
+- pnpm >= 9 (**no uses pnpm 10+**: bloquea scripts de build por defecto y rompe la instalación)
 
-## Expanding the ESLint configuration
+## Levantar en local
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
-
-- Configure the top-level `parserOptions` property like this:
-
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json', './tsconfig.app.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
+```bash
+pnpm install
+cp .env.example .env   # completar VITE_API_URL con la URL pública de prospero-backend
+pnpm dev                # http://localhost:5173
 ```
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+`VITE_API_URL` se usa desde el browser (esta app no tiene backend propio), así que tiene que ser
+una URL a la que el navegador pueda llegar — no un nombre de servicio de Docker.
+
+## Levantar todo el stack con Docker (recomendado para probar de punta a punta)
+
+Este repo es parte de un workspace con `prospero-backend` y `prospero-front`. Si los tenés
+clonados como hermanos en el mismo directorio, un solo comando levanta Postgres, una bandeja de
+correo falsa (Mailpit) y las tres apps, ya con los env vars correctos:
+
+```bash
+cd .. # a la carpeta que contiene los tres repos
+docker compose up --build
+```
+
+Ver `docker-compose.yml` y `docs/testing-guide.md` en la raíz del workspace para el detalle
+completo (URLs, credenciales de la DB, cómo probar el flujo de reset de contraseña de punta a
+punta con el correo capturado en Mailpit).
+
+## Comandos
+
+```bash
+pnpm build     # tsc -b && vite build
+pnpm lint      # eslint
+pnpm preview   # preview del build de producción
+```
+
+## Más detalle
+
+Ver `CLAUDE.md` en este repo.
