@@ -1,40 +1,41 @@
-# Deployment
+# Despliegue
 
-Same self-hosted-runner + Docker Compose pattern as `prospero-backend` and
-`prospero-front`: push to `main` → `.github/workflows/deploy.yml` lints,
-builds, and restarts the container on whatever server has this repo's
-runner registered.
+Mismo patrón de runner self-hosted + Docker Compose que
+`prospero-backend` y `prospero-front`: push a `main` → el workflow
+`.github/workflows/deploy.yml` corre lint, construye, y reinicia el
+contenedor en el servidor donde esté registrado el runner de este repo.
 
-This app is a **static SPA** (Vite, no server-side runtime), so unlike the
-other two repos its production container is nginx serving the built
-`dist/` folder, not a Node process — see `Dockerfile`/`nginx.conf`. nginx
-falls back unknown paths to `index.html` so the client-side router
-(`wouter`) can handle `/auth/reset-password/:token` etc.
+Esta app es una **SPA estática** (Vite, sin runtime del lado del
+servidor), así que a diferencia de los otros dos repos su contenedor de
+producción es nginx sirviendo la carpeta `dist/` ya construida, no un
+proceso de Node — ver `Dockerfile`/`nginx.conf`. nginx redirige cualquier
+ruta desconocida a `index.html` para que el router del lado del cliente
+(`wouter`) la maneje (ej. `/auth/reset-password/:token`).
 
-## Required GitHub Actions secret
+## Secreto requerido en GitHub Actions
 
-| Secret | What it is |
+| Secreto | Qué es |
 |---|---|
-| `VITE_API_URL` | `prospero-backend`'s public base URL including `/api` — gets baked into the built JS bundle at build time (Vite inlines `import.meta.env.VITE_*` statically), so it cannot be changed by just restarting the container; a new value needs a rebuild |
+| `VITE_API_URL` | URL pública de `prospero-backend`, incluyendo `/api` — queda incrustada en el bundle de JS en tiempo de build (Vite reemplaza `import.meta.env.VITE_*` de forma estática), así que no se puede cambiar solo reiniciando el contenedor; un valor nuevo requiere reconstruir |
 
-## Server setup
+## Configuración del servidor
 
-Same server as the backend/frontend (see `prospero-backend/DEPLOYMENT.md`
-for the full walkthrough — free VM, `docker network create prospero`,
-registering a runner per repo). This repo needs its **own** runner
-registration (Settings → Actions → Runners) even though it can share the
-physical machine.
+Mismo servidor que el backend/frontend (ver `prospero-backend/DEPLOYMENT.md`
+para el recorrido completo — lanzar la instancia EC2 en AWS, crear la red
+`docker network create prospero`, registrar un runner por repo). Este repo
+necesita **su propio** registro de runner (Settings → Actions → Runners)
+aunque comparta la máquina física.
 
-`docker-compose.yml` maps the container's nginx (port 80) to host port
-`5173` (matching the port this app has always used in dev, just now
-serving a real nginx instead of the Vite dev server) — adjust if you want
-it on a different host port, or put a shared reverse proxy / real domain
-in front of it later.
+El `docker-compose.yml` mapea el nginx del contenedor (puerto 80) al
+puerto `5173` del host (el mismo que esta app siempre usó en desarrollo,
+solo que ahora sirviendo un nginx real en vez del servidor de desarrollo
+de Vite) — cámbialo si quieres otro puerto, o pon un reverse proxy
+compartido / dominio real por delante más adelante.
 
-## Deploying
+## Desplegar
 
 ```bash
 git push origin main
 ```
 
-Watch the run under this repo's Actions tab.
+Míralo en la pestaña Actions de este repo.
