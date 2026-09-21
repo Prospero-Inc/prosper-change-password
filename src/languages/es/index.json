@@ -6,7 +6,7 @@
       "required": "Se requiere una contraseña",
       "min": "La contraseña debe tener al menos 8 caracteres",
       "max": "La contraseña debe tener como máximo 20 caracteres",
-      "pattern": "La contraseña debe contener al menos una letra y un número"
+      "pattern": "La contraseña debe contener al menos una minúscula, una mayúscula, un dígito y un carácter especial (ej. !@#$%^&*)"
     },
     "confirmPassword": {
       "required": "Se requiere confirmar la contraseña",
