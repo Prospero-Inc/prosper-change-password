@@ -2,6 +2,7 @@ services:
   app:
     container_name: prospero-change-password
     image: prospero-change-password
+    restart: unless-stopped
     build:
       context: ./
       dockerfile: Dockerfile
