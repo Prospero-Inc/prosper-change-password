@@ -38,6 +38,9 @@ const validationSchema = yup.object().shape({
     .oneOf([yup.ref('password')], language.errors.confirmPassword.match),
 });
 
+// Tolerate VITE_API_URL with or without a trailing '/': '//auth' isn't routed.
+const API_URL = String(import.meta.env.VITE_API_URL ?? '').replace(/\/+$/, '');
+
 type ResetPasswordProps = {
   token: string;
 };
@@ -61,7 +64,7 @@ export const ResetPassword = ({ token }: ResetPasswordProps) => {
     setIsLoading(true);
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/auth/reset-password/${token}`,
+        `${API_URL}/auth/reset-password/${token}`,
         {
           method: 'POST',
           headers: {
@@ -83,13 +86,30 @@ export const ResetPassword = ({ token }: ResetPasswordProps) => {
         });
       }
       if (!response?.ok) {
+        // Nest returns `{ message: string | string[] }` on 400/422; surface
+        // the real reason (weak password, expired link) instead of a generic
+        // error so the user knows what to fix.
+        const body = await response.json().catch(() => null);
+        const message = Array.isArray(body?.message)
+          ? body.message.join(' ')
+          : typeof body?.message === 'string' && response.status === 400
+            ? body.message
+            : language.toast.error.description;
         return toast({
           title: language.toast.error.title,
-          description: language.toast.error.description,
+          description: message,
           status: 'error',
           isClosable: true,
         });
       }
+    } catch {
+      // fetch() itself rejected (offline, DNS, CORS) — no response to read.
+      toast({
+        title: language.toast.error.title,
+        description: language.toast.error.description,
+        status: 'error',
+        isClosable: true,
+      });
     } finally {
       setIsLoading(false);
     }
